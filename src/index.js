@@ -1,95 +1,58 @@
-document.addEventListener("DOMContentLoaded", function(){
-    // load/render the page
-    
-    // grab data but does not render on page
+document.addEventListener("DOMContentLoaded", function() {
     function fetchRamens() {
-        // example: jane sends email to sy to specific email address
         fetch("http://localhost:3000/ramens")
-        // exmaple: SY recieves the email - .json(): reading over email
         .then (response => response.json())
-        // example: jane gets response from SY
         .then (data => {
-            // console.log(data); --> should console log to see the data you're working with
+            // console.log(data);
             renderRamens(data)
         }) 
     }
-    // MUST invoke function to see the data
     fetchRamens();
 
-    // (ramens) is the data from fetchRamens
+    const ramenMenu = document.getElementById("ramen-menu");
+    const detailImage = document.querySelector(".detail-image");
+    const ramenName = document.querySelector(".name");
+    const ramenRestaurant = document.querySelector(".restaurant");
+    const ramenRating = document.querySelector("#rating-display");
+    const ramenComment = document.querySelector("#comment-display");
+    const ramenForm = document.querySelector("#new-ramen");
+
     function renderRamens(ramens) {
-
-        const form = document.getElementById('new-ramen');
-        const ramenMenu = document.getElementById("ramen-menu");
-        const restaurant = document.querySelector(".restaurant");
-        const selectImage = document.querySelector(".detail-image");
-        const ramenName = document.querySelector(".name");
-        const rating = document.querySelector("#rating-display");
-        const comment = document.querySelector("#comment-display");
-  
-        // with the data of ramens which is an array of objs & "ramen" is the parameter that's grabbing the single obj in my array of objects
-        ramens.forEach(ramen => {       
+        ramens.forEach(function(singleRamenObj) {
+            // console.log(singleRamenObj);
             const ramenImage = document.createElement("img");
-            // setAttribute(takes in attribute name, source of attribute)
-            ramenImage.setAttribute("src", ramen.image);
-            ramenImage.setAttribute("id", ramen.id);
-            // appendChild (parentNode.appendChild(childNode))
+            ramenImage.setAttribute("src", singleRamenObj.image);
+            ramenImage.setAttribute("id", singleRamenObj.id);
+            // console.log(ramenImage);
             ramenMenu.appendChild(ramenImage);
-            // event listener on click of image - callback function of fetchSingleRamenDetail
-            ramenImage.addEventListener('click', () => fetchSingleRamenDetail(ramen))
-        })
-
-        // fetch details of each single ramen detail by id
-        function fetchSingleRamenDetail(ramen) {
-            fetch(`http://localhost:3000/ramens/${ramen.id}`)
-            .then (response => response.json())
-            // use the individual ramen detail and pass in function renderRamen
-            .then (data => renderRamen(data))
-        }
-
-        // pass in each single individual ramen
-        function renderRamen(ramen) {
-            // querySelector - grabs FIRST element that matches
-            // --> of CLASSNAME of html element (must be string with '.')
-            // --> of ID of html element (must be string with '#')
-
-            // setting the attribute of src to ramen.image which is the 'url' from data
-            selectImage.setAttribute("src", ramen.image)
-            
-            // setting the INNERTEXT or value of the information from data
-            ramenName.innerText = ramen.name;
-            restaurant.innerText = ramen.restaurant;
-            rating.innerText = ramen.rating;
-            comment.innerText = ramen.comment;
-        }
-
-        function logSubmit(event) {
-            event.preventDefault();
-
-            // grab all data from the input form by .value
-            const newName = document.getElementById("new-name").value;
-            const newRestaurant = document.getElementById("new-restaurant").value;
-            const newImage = document.getElementById("new-image").value;
-            const newRating = document.getElementById("new-rating").value;
-            const newComment = document.getElementById("new-comment").value;
-
-            // create image tag element to add to ramen menu
-            const ramenImage = document.createElement("img");
-            // set attribute to source of image to the link of url that was put in the form
-            ramenImage.setAttribute("src", newImage);
-            // once image is created, add the newly created image into ramen menu
-            ramenMenu.appendChild(ramenImage);
-
-            // add an eventListener so that once you CLICK the newly added image do this...
-            // --> callback function to display information into elements that are on the page
-            ramenImage.addEventListener('click', function() {
-                selectImage.setAttribute('src', newImage);
-                ramenName.innerText = newName;
-                restaurant.innerText = newRestaurant;
-                rating.innerText = newRating;
-                comment.innerText = newComment;
+            ramenImage.addEventListener("click", function displayDetail() {
+                // console.log(detailImage);
+                detailImage.setAttribute("src", singleRamenObj.image);
+                ramenName.innerText = singleRamenObj.name;
+                ramenRestaurant.innerText = singleRamenObj.restaurant;
+                ramenRating.innerText = singleRamenObj.rating;
+                ramenComment.innerText = singleRamenObj.comment;
             })
-        }
-        form.addEventListener('submit', logSubmit);
+        })
     }
-});
+    ramenForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const newName = document.querySelector("#new-name").value;
+        const newRestaurant = document.querySelector("#new-restaurant").value;
+        const newImage = document.querySelector("#new-image").value;
+        const newRating = document.querySelector("#new-rating").value;
+        const newComment = document.querySelector("#new-comment").value;
+        // console.log(newName,newRestaurant,newImage,newRating,newComment);
+        const newRamenImage = document.createElement("img");
+        newRamenImage.setAttribute("src", newImage);
+        // console.log(newRamenImage);
+        ramenMenu.appendChild(newRamenImage);
+        newRamenImage.addEventListener('click', function() {
+            detailImage.setAttribute("src", newImage);
+            ramenName.innerText = newName;
+            ramenRestaurant.innerText = newRestaurant;
+            ramenRating.innerText = newRating;
+            ramenComment.innerText = newComment;
+        })
+    })
+})
