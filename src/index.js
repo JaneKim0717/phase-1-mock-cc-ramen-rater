@@ -1,58 +1,51 @@
 document.addEventListener("DOMContentLoaded", function() {
-    function fetchRamens() {
-        fetch("http://localhost:3000/ramens")
-        .then (response => response.json())
-        .then (data => {
-            // console.log(data);
-            renderRamens(data)
-        }) 
-    }
-    fetchRamens();
+    fetch("http://localhost:3000/ramens")
+    .then(response => response.json())
+    .then(ramens => renderRamens(ramens))
 
     const ramenMenu = document.getElementById("ramen-menu");
+    // const ramenDetail = document.getElementById("ramen-detail");
     const detailImage = document.querySelector(".detail-image");
-    const ramenName = document.querySelector(".name");
-    const ramenRestaurant = document.querySelector(".restaurant");
-    const ramenRating = document.querySelector("#rating-display");
-    const ramenComment = document.querySelector("#comment-display");
-    const ramenForm = document.querySelector("#new-ramen");
+    const ramenDetailName = document.querySelector(".name");
+    const ramenDetailRestaurant = document.querySelector(".restaurant");
+    const ratingDisplay = document.getElementById("rating-display");
+    const commentDisplay = document.getElementById("comment-display");
 
     function renderRamens(ramens) {
         ramens.forEach(function(singleRamenObj) {
-            // console.log(singleRamenObj);
-            const ramenImage = document.createElement("img");
-            ramenImage.setAttribute("src", singleRamenObj.image);
-            ramenImage.setAttribute("id", singleRamenObj.id);
-            // console.log(ramenImage);
-            ramenMenu.appendChild(ramenImage);
-            ramenImage.addEventListener("click", function displayDetail() {
-                // console.log(detailImage);
+            const ramenImage = document.createElement("img")
+            ramenImage.setAttribute("src", singleRamenObj.image)
+            ramenMenu.appendChild(ramenImage)
+
+            ramenImage.addEventListener("click", function() {
                 detailImage.setAttribute("src", singleRamenObj.image);
-                ramenName.innerText = singleRamenObj.name;
-                ramenRestaurant.innerText = singleRamenObj.restaurant;
-                ramenRating.innerText = singleRamenObj.rating;
-                ramenComment.innerText = singleRamenObj.comment;
+                ramenDetailName.innerText = singleRamenObj.name;
+                ramenDetailRestaurant.innerText = singleRamenObj.restaurant;
+                ratingDisplay.innerText = singleRamenObj.rating;
+                commentDisplay.innerText = singleRamenObj.comment;
             })
         })
     }
-    ramenForm.addEventListener('submit', function(event) {
+
+    const newRamenForm = document.getElementById("new-ramen");
+    newRamenForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const newName = document.querySelector("#new-name").value;
-        const newRestaurant = document.querySelector("#new-restaurant").value;
-        const newImage = document.querySelector("#new-image").value;
-        const newRating = document.querySelector("#new-rating").value;
-        const newComment = document.querySelector("#new-comment").value;
-        // console.log(newName,newRestaurant,newImage,newRating,newComment);
+        const newName = document.getElementById("new-name").value;
+        const newRestaurant = document.getElementById("new-restaurant").value;
+        const newImage = document.getElementById("new-image").value;
+        const newRating = document.getElementById("new-rating").value;
+        const newComment = document.getElementById("new-comment").value;
+
         const newRamenImage = document.createElement("img");
         newRamenImage.setAttribute("src", newImage);
-        // console.log(newRamenImage);
-        ramenMenu.appendChild(newRamenImage);
-        newRamenImage.addEventListener('click', function() {
+        ramenMenu.appendChild(newRamenImage)
+
+        newRamenImage.addEventListener("click", function() {
             detailImage.setAttribute("src", newImage);
-            ramenName.innerText = newName;
-            ramenRestaurant.innerText = newRestaurant;
-            ramenRating.innerText = newRating;
-            ramenComment.innerText = newComment;
+            ramenDetailName.innerText = newName;
+            ramenDetailRestaurant.innerText = newRestaurant;
+            commentDisplay.innerText = newComment; 
+            ratingDisplay.innerText = newRating;
         })
     })
 })
